@@ -1,0 +1,19 @@
+{
+  "name": "nuswitch-energy-comparison",
+  "version": "1.0.0",
+  "description": "Technical challenge for uSwitch written by Velizar Genov",
+  "main": "comparison.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/velizargenov/nuswitch-energy-comparison.git"
+  },
+  "author": "Velizar Genov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/velizargenov/nuswitch-energy-comparison/issues"
+  },
+  "homepage": "https://github.com/velizargenov/nuswitch-energy-comparison#readme"
+}
