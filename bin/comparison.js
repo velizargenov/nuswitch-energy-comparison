@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const readline = require('readline');
-const obj = require('./main');
+const methods = require('./index');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -10,9 +10,11 @@ const rl = readline.createInterface({
 });
 
 const executeCommandsInOrder = (line) => {
-  const arr = line.split(' ');
-  const funToExecute = obj[arr[0]](arr[1])
-  console.log('obj: ', funToExecute);
+  const args = line.split(' ');
+  const functionName = args && args[0];
+  const functionParameters = [].slice.call(args.splice(1));
+
+  return methods[functionName](...functionParameters);
 }
 
 rl.on('line', executeCommandsInOrder);
