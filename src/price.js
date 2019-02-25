@@ -60,8 +60,10 @@ const generateRawResult = (item, ANNUAL_USAGE) => {
 };
 
 const price = ANNUAL_USAGE => {
-  const rawResult = data.map(item => generateRawResult(item, ANNUAL_USAGE));
-  rawResult.sort((a, b) => (a.finalRate > b.finalRate) ? 1 : -1);
+  const rawResult = data
+    .map(item => generateRawResult(item, ANNUAL_USAGE))
+    .sort((a, b) => (a.finalRate > b.finalRate) ? 1 : -1);
+
   let returnResult = [];
   rawResult.forEach(item => {
     console.log(`${item.supplier},${item.plan},${item.finalRate}`);
