@@ -1,31 +1,19 @@
 const data = require('../getData')();
-const vatRate = 5;
-const daysInYear = 365;
+const vatRate = require('./constants').vatRate;
+const numberOfDaysInYear = require('./constants').numberOfDaysInYear;
 
-const addStandingChargeToComputedRate = (computedRate, standing_charge, daysInYear) => {
-  const standingChargeValue = daysInYear * standing_charge;
-  return computedRate + standingChargeValue;
+const price = ANNUAL_USAGE => {
+  let returnResult = [];
+  const rawResult = data
+    .map(item => generateRawResult(item, ANNUAL_USAGE))
+    .sort((a, b) => a.finalRate - b.finalRate);
+
+  rawResult.forEach(item => {
+    returnResult.push(`${item.supplier},${item.plan},${item.finalRate}`);
+    console.log(`${item.supplier},${item.plan},${item.finalRate}`);
+  });
+  return returnResult;
 };
-
-const calculateVatForComputedRate = (vatRate, computedRate) => {
-  return computedRate * (vatRate / 100);
-};
-
-const calculateRateWithStandingChargeAndVat = (computedRate, vatToBeAdded) => {
-  return (computedRate + vatToBeAdded) / 100;
-}
-
-const roundFinalRate = (rateWithStandingChargeAndVat) => {
-  return Math.round(rateWithStandingChargeAndVat * 100) / 100;
-}
-
-const calculateFinalRate = (vatRate, computedRate) => {
-  const vatToBeAdded = calculateVatForComputedRate(vatRate, computedRate);
-  const rateWithStandingChargeAndVat = calculateRateWithStandingChargeAndVat(computedRate, vatToBeAdded);
-  const roundedFinalRate = roundFinalRate(rateWithStandingChargeAndVat);
-
-  return roundedFinalRate;
-}
 
 const generateRawResult = (item, ANNUAL_USAGE) => {
   let usage = ANNUAL_USAGE;
@@ -44,36 +32,47 @@ const generateRawResult = (item, ANNUAL_USAGE) => {
     }
   }, 0);
 
-  // Check if there is standing_charge and update computedRate
   if (standing_charge) {
-    computedRate = addStandingChargeToComputedRate(computedRate, standing_charge, daysInYear);
+    computedRate = addStandingChargeToComputedRate(computedRate, standing_charge, numberOfDaysInYear);
   }
-
-  // Calculate final price inclusive VAT and standing_charge if applicable
-  const finalRate = calculateFinalRate(vatRate, computedRate);
 
   return {
     supplier: item.supplier,
     plan: item.plan,
-    finalRate: finalRate
+    finalRate: calculateFinalRate(vatRate, computedRate)
   };
 };
 
-const price = ANNUAL_USAGE => {
-  const rawResult = data
-    .map(item => generateRawResult(item, ANNUAL_USAGE))
-    .sort((a, b) => (a.finalRate > b.finalRate) ? 1 : -1);
-
-  let returnResult = [];
-  rawResult.forEach(item => {
-    console.log(`${item.supplier},${item.plan},${item.finalRate}`);
-    returnResult.push(`${item.supplier},${item.plan},${item.finalRate}`)
-  });
-  return returnResult;
+const addStandingChargeToComputedRate = (computedRate, standing_charge, numberOfDaysInYear) => {
+  const standingChargeValue = numberOfDaysInYear * standing_charge;
+  return computedRate + standingChargeValue;
 };
+
+const calculateFinalRate = (vatRate, computedRate) => {
+  const vatToBeAdded = calculateVatForComputedRate(vatRate, computedRate);
+  const rateWithStandingChargeAndVat = calculateRateWithStandingChargeAndVat(computedRate, vatToBeAdded);
+
+  return roundFinalRate(rateWithStandingChargeAndVat);
+}
+
+const calculateVatForComputedRate = (vatRate, computedRate) => {
+  return computedRate * vatRate;
+};
+
+const calculateRateWithStandingChargeAndVat = (computedRate, vatToBeAdded) => {
+  return (computedRate + vatToBeAdded) / 100;
+}
+
+const roundFinalRate = (rateWithStandingChargeAndVat) => {
+  return Math.round(rateWithStandingChargeAndVat * 100) / 100;
+}
 
 module.exports = {
   price,
   generateRawResult,
-  addStandingChargeToComputedRate
+  addStandingChargeToComputedRate,
+  calculateFinalRate,
+  calculateVatForComputedRate,
+  calculateRateWithStandingChargeAndVat,
+  roundFinalRate
 };

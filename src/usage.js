@@ -1,8 +1,7 @@
 const data = require('../getData')();
-
-const numberOfMonthsInYear = 12;
-const numberOfDaysInYear = 365;
-const vatRate = 0.05;
+const numberOfMonthsInYear = require('./constants').numberOfMonthsInYear;
+const numberOfDaysInYear = require('./constants').numberOfDaysInYear;
+const vatRate = require('./constants').vatRate;
 
 const calculateAnnualSpendAmount = (monthlySpend, numberOfMonthsInYear) => {
   return monthlySpend * numberOfMonthsInYear;
