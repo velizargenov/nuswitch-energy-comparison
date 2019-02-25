@@ -1,4 +1,4 @@
-const data = require('../bin/getData')();
+const data = require('../getData')();
 const vatRate = 5;
 const daysInYear = 365;
 

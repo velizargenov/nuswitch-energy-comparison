@@ -4,7 +4,8 @@
   "description": "Technical challenge for uSwitch written by Velizar Genov",
   "main": "comparison.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "checkDiff": "./bin/comparison.js ./plans.json < inputs > actual_output && diff -s expected_output actual_output"
   },
   "repository": {
     "type": "git",

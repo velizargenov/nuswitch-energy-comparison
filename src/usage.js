@@ -1,5 +1,4 @@
-const data = require('../bin/getData')();
-const price = require('../src/price').price;
+const data = require('../getData')();
 
 const numberOfMonthsInYear = 12;
 const numberOfDaysInYear = 365;
@@ -78,12 +77,6 @@ const usage = (SUPPLIER_NAME, PLAN_NAME, SPEND) => {
   return finalEnergyUsage;
 };
 
-const exit = () => {
-  return 3
-};
-
 module.exports = {
-  price,
-  usage,
-  exit
-};
+  usage
+}

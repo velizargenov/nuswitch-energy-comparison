@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const readline = require('readline');
-const exported = require('./index');
+const exported = require('../index');
 
 const rl = readline.createInterface({
   input: process.stdin,
