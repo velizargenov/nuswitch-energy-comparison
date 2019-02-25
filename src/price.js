@@ -70,4 +70,8 @@ const price = ANNUAL_USAGE => {
   return returnResult;
 };
 
-module.exports = price;
+module.exports = {
+  price,
+  generateRawResult,
+  addStandingChargeToComputedRate
+};

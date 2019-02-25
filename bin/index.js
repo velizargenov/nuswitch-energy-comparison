@@ -1,4 +1,4 @@
-const price = require('../src/price');
+const price = require('../src/price').price;
 
 const usage = (SUPPLIER_NAME, PLAN_NAME, SPEND) => {
   return 2
