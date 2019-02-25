@@ -1,8 +1,4 @@
-const data = require('./getData')();
-
-const price = ANNUAL_USAGE => {
-  return 1;
-};
+const price = require('../src/price');
 
 const usage = (SUPPLIER_NAME, PLAN_NAME, SPEND) => {
   return 2
@@ -13,7 +9,7 @@ const exit = () => {
 };
 
 module.exports = {
-  price: price,
-  usage: usage,
-  exit: exit
+  price,
+  usage,
+  exit
 };

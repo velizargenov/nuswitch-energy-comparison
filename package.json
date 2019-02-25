@@ -12,10 +12,6 @@
   },
   "author": "Velizar Genov",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/velizargenov/nuswitch-energy-comparison/issues"
-  },
-  "homepage": "https://github.com/velizargenov/nuswitch-energy-comparison#readme",
   "bin": {
     "compare": "./bin/comparison.js"
   },
