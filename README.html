@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome file</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h1 id="nuswitch-energy-comparison">nuSwitch Energy Comparison</h1>
+<h5 id="table-of-contents">Table of Contents</h5>
+<p><a href="#intro">Intro</a><br></p>
+<p><a href="#installation">Installation</a><br></p>
+<p><a href="#testing">Testing</a><br></p>
+<p><a href="#price">Price</a><br></p>
+<p><a href="#usage">Usage</a><br></p>
+<p><a href="#further-improvements">Further Improvements</a><br></p>
+<h2 id="intro">Intro</h2>
+<p>As part of the interview process at uSwitch I was given the technical challenge</p>
+<p>to build the “nuSwitch Energy Comparison” system. I have decided to use JavaScript (Node)</p>
+<p>and Jest as a testing framework. Please find some notes on how I have implemented</p>
+<p>my solution as well as detailed instructions on how to test it below.</p>
+<p><img src="https://user-images.githubusercontent.com/11490137/53380505-8c4f5400-3965-11e9-965b-e051cf78c752.gif" alt="feb-26-2019 01-24-56"></p>
+<h2 id="installation">Installation</h2>
+<h5 id="prerequisites">Prerequisites</h5>
+<pre><code>
+npm v6.4.1 or later
+
+node v10.15.1 or later
+
+</code></pre>
+<h5 id="instructions">Instructions</h5>
+<pre><code>
+1 - Download and unzip nusiwtch-energy-comparison--velizar-genov.zip
+
+2 - cd nusiwtch-energy-comparison--velizar-genov
+
+3 - npm install
+
+4 - npm run checkDiff
+
+  
+
+see the sections below for more information
+
+</code></pre>
+<pre><code>
+/**
+
+* Runs `./bin/comparison.js plans.json &lt; inputs`
+
+* It saves the result in a file called actual_output
+
+* It finally compares the two files
+
+*/
+
+  
+
+npm run checkDiff
+
+</code></pre>
+<pre><code>
+&gt;&gt; Prints the result in the console
+
+./bin/comparison.js plans.json &lt; inputs
+
+  
+
+&gt;&gt; Saves the result in a file called actual_output
+
+./bin/comparison.js plans.json &lt; inputs &gt; actual_output
+
+  
+
+&gt;&gt; Compares the two files, i.e. actual_output and expected_output
+
+diff -s actual_output expected_output
+
+</code></pre>
+<h2 id="testing">Testing</h2>
+<h3 id="code">Code</h3>
+<pre><code>
+// Run unit tests
+
+$ npm test
+
+</code></pre>
+<p><img width="700" alt="screenshot 2019-02-25 at 21 56 43" src="https://user-images.githubusercontent.com/11490137/53378615-1eebf500-395e-11e9-9898-f9c8b433300c.png"><br></p>
+<p><img width="700" alt="screenshot 2019-02-25 at 23 29 20" src="https://user-images.githubusercontent.com/11490137/53378628-362ae280-395e-11e9-9875-d2ac98c569c6.png"><br></p>
+<p><img width="700" alt="screenshot 2019-02-25 at 23 32 54" src="https://user-images.githubusercontent.com/11490137/53378643-404ce100-395e-11e9-8f2a-25d2649c25cb.png"><br></p>
+<h2 id="price">Price</h2>
+<p>I used a paper and a pen in order to verify all calculations fromt he sample data. Once this was done I moved to implementing the solution. I came up with those steps for the first part of the challenge:</p>
+<ol>
+<li>Generate the raw result using reduce<br></li>
+</ol>
+<p>1.1. If there is no threshold(s) available calculate the raw result by multipling the usage by the price<br></p>
+<p>1.2. If there is threshold(s) calculate what the max threshold is and multiply it to the price<br></p>
+<p>1.3. If there is a standing charge available, add it to the computed rate<br></p>
+<p>1.4. Return an object that holds information about the supplier, the plan and the final rate<br></p>
+<ol start="2">
+<li>
+<p>Sort the result from 1 based on finalRate<br></p>
+</li>
+<li>
+<p>Iterrate through each element from the result from 2<br></p>
+</li>
+</ol>
+<p>3.1. Print each row in format supplier,plan,finalRate<br></p>
+<p>3.2. Store the result in an array and return it so it can be used to facilitate the testing of the functionality</p>
+<h2 id="usage">Usage</h2>
+<p>Similarly to the price method, first and foremost, I used a paper and pen to manually make all computations for the sample data and only then I moved to the implementation. I came up with the following steps to help me achieve the final goal of this part of the task:</p>
+<ol>
+<li>
+<p>Get data for requested supplier and plan<br></p>
+</li>
+<li>
+<p>Calculate the amount in pence without VAT and Standing Charge <br></p>
+</li>
+</ol>
+<p>2.1. Calculate the annual spend amount<br></p>
+<p>2.2. Convert pounds to pence<br></p>
+<p>2.3. Remove VAT<br></p>
+<p>2.4. Remove standing charge if applicable<br></p>
+<ol start="3">
+<li>In order to avoid heavy computations split logic conditionaly on threshold availability<br></li>
+</ol>
+<p>3.1. If there is no threshold calculate the amount of energy directly<br></p>
+<p>3.2. If there is threshold(s) calculate the amount of energy following the steps<br></p>
+<p>3.2.1 Get the amount of total threshold(s) and total price for this threshold(s) and keep a track of them<br></p>
+<p>3.2.2 Calculate the energy with the threshold taken into account<br></p>
+<ol start="4">
+<li>Print the result to the console</li>
+</ol>
+<h2 id="further-improvements">Further Improvements</h2>
+<p>My main focus has been completing the task and delivering a good quality Minimum Viable Product (MVP), covering</p>
+<p>all requirements listed in the task. There are, of course, number of things that could be improved in further horizons.</p>
+<p>For example, the set up around retrieving the testing data is very basic. Some validation could be added as currently there are some cases when the application could crash if incorrect input is provided.</p>
+<p>More, by adding babel to the project, the syntax could be improved, for example, by using import instead of require. However, I wanted to keep the set up as simple as possible and hence I don’t believe this is something that brings enought value to be used in this particular case.</p>
+<p>There are other node modules (lodash for example) that could be used in order to simplify or improve the code.</p>
+<p>Finally, additional refactoring could be done to both the price and the usage files. Some of the functionality in both files could potentially be extracted in a helper file and shared between the two. Similarly, I do not think this is causing any major issues and am happy to improve it in my spare time in the future.</p>
+<h2 id="author">Author</h2>
+<p>Velizar Genov for uSwitch</p>
+</div>
+</body>
+
+</html>
