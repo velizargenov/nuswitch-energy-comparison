@@ -1,10 +1,12 @@
-const price = require('./price').price;
-const generateRawResult = require('./price').generateRawResult;
-const addStandingChargeToComputedRate = require('./price').addStandingChargeToComputedRate;
-const calculateFinalRate = require('./price').calculateFinalRate;
-const calculateVatForComputedRate = require('./price').calculateVatForComputedRate;
-const calculateRateWithStandingChargeAndVat = require('./price').calculateRateWithStandingChargeAndVat;
-const roundFinalRate = require('./price').roundFinalRate;
+import {
+  price,
+  generateRawResult,
+  addStandingChargeToComputedRate,
+  calculateFinalRate,
+  calculateVatForComputedRate,
+  calculateRateWithStandingChargeAndVat,
+  roundFinalRate
+} from './price';
 
 describe('about price', () => {
   it('should return the expected result for annual usage of 1000 kWh', () => {
@@ -56,7 +58,6 @@ describe('about generateRawResult', () => {
 
   it('should return the expected result for 2000 kWh annual usage taking into account the base price and no thresholds', () => {
     const item = {"supplier": "eon", "plan": "variable", "rates": [{"price": 10}]};
-    ANNUAL_USAGE = 2000;
     const expectedResult = { supplier: 'eon', plan: 'variable', finalRate: 210};
     const annualUsage = 2000;
     expect(generateRawResult(item, annualUsage)).toEqual(expectedResult);
@@ -72,9 +73,9 @@ describe('about generateRawResult', () => {
 
 describe('about addStandingChargeToComputedRate', () => {
   it('should add the standing daily charge if available', () => {
-    computedRate = 111.25;
-    standing_charge = 7;
-    daysInYear = 365;
+    const computedRate = 111.25;
+    const standing_charge = 7;
+    const daysInYear = 365;
     expect(addStandingChargeToComputedRate(computedRate, standing_charge, daysInYear)).toEqual(2666.25);
   });
 });

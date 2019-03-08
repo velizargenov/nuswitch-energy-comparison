@@ -1,12 +1,11 @@
-const fs = require('fs');
+const sampleData = [
+  {"supplier": "eon", "plan": "variable", "rates": [{"price": 13.5, "threshold": 100}, {"price": 10}]},
+  {"supplier": "ovo", "plan": "standard", "rates": [{"price": 12.5, "threshold": 300}, {"price": 11}]},
+  {"supplier": "edf", "plan": "fixed", "rates": [{"price": 14.5, "threshold": 250}, {"price": 10.1, "threshold": 200}, {"price": 9}]},
+  {"supplier": "bg", "plan": "standing-charge", "rates": [{"price": 9}], "standing_charge": 7}
+]
 
-const getData = () => {
-  const[,, ...args] = process.argv;
-  const filePath = (args && args[0]) || './plans.json';
-  const sampleData = fs.readFileSync(filePath, 'utf8');
-  const sampleDataToJson = JSON.parse(sampleData);
-
-  return sampleDataToJson;
-};
-
-module.exports = getData;
+export const getData = () => {
+  const plans = process.argv[2];
+  return plans ? JSON.parse(plans) : sampleData;
+}

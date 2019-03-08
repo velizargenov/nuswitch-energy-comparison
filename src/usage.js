@@ -1,9 +1,8 @@
-const data = require('../getData')();
-const numberOfMonthsInYear = require('./constants').numberOfMonthsInYear;
-const numberOfDaysInYear = require('./constants').numberOfDaysInYear;
-const vatRate = require('./constants').vatRate;
+import { getData } from '../getData';
+import { vatRate, numberOfDaysInYear, numberOfMonthsInYear } from './constants';
 
-const usage = (SUPPLIER_NAME, PLAN_NAME, SPEND) => {
+export const usage = (SUPPLIER_NAME, PLAN_NAME, SPEND) => {
+  const data = getData();
   const planData = getDataForRequestedSupplierAndPlan(data, SUPPLIER_NAME, PLAN_NAME);
   const amountInPenceWithoutVatAndStandingCharge = getAmountInPenceWithoutVatAndStandingCharge(planData, SPEND, numberOfMonthsInYear);
   const { rates } = planData;
@@ -16,11 +15,11 @@ const usage = (SUPPLIER_NAME, PLAN_NAME, SPEND) => {
   return finalEnergyUsage;
 };
 
-const getDataForRequestedSupplierAndPlan = (data, supplierName, planName) => {
+export const getDataForRequestedSupplierAndPlan = (data, supplierName, planName) => {
   return data.find(({ supplier, plan }) => supplier === supplierName && plan === planName);
 };
 
-const getAmountInPenceWithoutVatAndStandingCharge = (planData, spend, numberOfMonthsInYear) => {
+export const getAmountInPenceWithoutVatAndStandingCharge = (planData, spend, numberOfMonthsInYear) => {
   const annualSpendAmountInPounds = calculateAnnualSpendAmount(spend, numberOfMonthsInYear);
   const annualSpendAmountInPences = convertToPences(annualSpendAmountInPounds);
   const amountWithoutVat = removeVat(annualSpendAmountInPences, vatRate);
@@ -29,23 +28,23 @@ const getAmountInPenceWithoutVatAndStandingCharge = (planData, spend, numberOfMo
   return amountWithoutVatAndStandingCharge;
 }
 
-const calculateAnnualSpendAmount = (monthlySpend, numberOfMonthsInYear) => {
+export const calculateAnnualSpendAmount = (monthlySpend, numberOfMonthsInYear) => {
   return monthlySpend * numberOfMonthsInYear;
 };
 
-const convertToPences = (amount) => {
+export const convertToPences = (amount) => {
   return amount * 100;
 };
 
-const removeVat = (amount, vatRate) => {
+export const removeVat = (amount, vatRate) => {
   return Math.round(amount / (1 + vatRate));
 };
 
-const removeStandingCharge = ({ standing_charge }, amount, numberOfDaysInYear) => {
+export const removeStandingCharge = ({ standing_charge }, amount, numberOfDaysInYear) => {
   return standing_charge ? amount - (standing_charge * numberOfDaysInYear) : amount;
 };
 
-const getAmountOfEnergyWithThresholds = (rates, amount) => {
+export const getAmountOfEnergyWithThresholds = (rates, amount) => {
   const amountOfTotalThresholdPrice = getAmountOfThreshold(rates, amount);
   const { totalPrice, totalThreshold } = amountOfTotalThresholdPrice;
   const tempAmount = amount - totalPrice;
@@ -55,7 +54,7 @@ const getAmountOfEnergyWithThresholds = (rates, amount) => {
   return baseRateUsage + totalThreshold;
 }
 
-var getAmountOfThreshold = (rates) => {
+export var getAmountOfThreshold = (rates) => {
   return rates
     .filter(rate => rate.threshold)
     .reduce((acc, currentValue) => {
@@ -72,19 +71,6 @@ var getAmountOfThreshold = (rates) => {
     },0)
 }
 
-var getAmountOfEnergyWithoutThresholds = (rates, amount) => {
+export var getAmountOfEnergyWithoutThresholds = (rates, amount) => {
   return Math.round(amount / (rates && rates[0] && rates[0].price));
-}
-
-module.exports = {
-  usage,
-  getDataForRequestedSupplierAndPlan,
-  getAmountInPenceWithoutVatAndStandingCharge,
-  calculateAnnualSpendAmount,
-  convertToPences,
-  removeVat,
-  removeStandingCharge,
-  getAmountOfEnergyWithoutThresholds,
-  getAmountOfEnergyWithThresholds,
-  getAmountOfThreshold
 }

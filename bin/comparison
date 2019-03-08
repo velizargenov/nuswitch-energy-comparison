@@ -1,0 +1,5 @@
+#!/bin/bash
+
+PLANS=$(<$1)
+
+npm run cli --silent -- "$PLANS"

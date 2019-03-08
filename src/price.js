@@ -1,9 +1,9 @@
-const data = require('../getData')();
-const vatRate = require('./constants').vatRate;
-const numberOfDaysInYear = require('./constants').numberOfDaysInYear;
+import { getData } from '../getData';
+import { numberOfDaysInYear, vatRate } from './constants';
 
-const price = ANNUAL_USAGE => {
+export const price = ANNUAL_USAGE => {
   let returnResult = [];
+  const data = getData();
   const rawResult = data
     .map(item => generateRawResult(item, ANNUAL_USAGE))
     .sort((a, b) => a.finalRate - b.finalRate);
@@ -15,7 +15,7 @@ const price = ANNUAL_USAGE => {
   return returnResult;
 };
 
-const generateRawResult = (item, ANNUAL_USAGE) => {
+export const generateRawResult = (item, ANNUAL_USAGE) => {
   let usage = ANNUAL_USAGE;
   const { rates, standing_charge } = item;
 
@@ -43,36 +43,26 @@ const generateRawResult = (item, ANNUAL_USAGE) => {
   };
 };
 
-const addStandingChargeToComputedRate = (computedRate, standing_charge, numberOfDaysInYear) => {
+export const addStandingChargeToComputedRate = (computedRate, standing_charge, numberOfDaysInYear) => {
   const standingChargeValue = numberOfDaysInYear * standing_charge;
   return computedRate + standingChargeValue;
 };
 
-const calculateFinalRate = (vatRate, computedRate) => {
+export const calculateFinalRate = (vatRate, computedRate) => {
   const vatToBeAdded = calculateVatForComputedRate(vatRate, computedRate);
   const rateWithStandingChargeAndVat = calculateRateWithStandingChargeAndVat(computedRate, vatToBeAdded);
 
   return roundFinalRate(rateWithStandingChargeAndVat);
 }
 
-const calculateVatForComputedRate = (vatRate, computedRate) => {
+export const calculateVatForComputedRate = (vatRate, computedRate) => {
   return computedRate * vatRate;
 };
 
-const calculateRateWithStandingChargeAndVat = (computedRate, vatToBeAdded) => {
+export const calculateRateWithStandingChargeAndVat = (computedRate, vatToBeAdded) => {
   return (computedRate + vatToBeAdded) / 100;
 }
 
-const roundFinalRate = (rateWithStandingChargeAndVat) => {
+export const roundFinalRate = (rateWithStandingChargeAndVat) => {
   return Math.round(rateWithStandingChargeAndVat * 100) / 100;
 }
-
-module.exports = {
-  price,
-  generateRawResult,
-  addStandingChargeToComputedRate,
-  calculateFinalRate,
-  calculateVatForComputedRate,
-  calculateRateWithStandingChargeAndVat,
-  roundFinalRate
-};

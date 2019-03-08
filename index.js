@@ -1,9 +1,15 @@
-const price = require('./src/price').price;
-const usage = require('./src/usage').usage;
-const exit = require('./src/exit');
+import readline from 'readline';
+import commands from './commands';
 
-module.exports = {
-  price,
-  usage,
-  exit
-};
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
+});
+
+const executeCommandsInOrder = (line) => {
+  const [command, ...args] = line.trim().split(' ');
+  return commands[command](...args);
+}
+
+rl.on('line', executeCommandsInOrder);

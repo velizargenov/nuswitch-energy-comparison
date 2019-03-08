@@ -1,13 +1,15 @@
-const usage = require('./usage').usage;
-const getDataForRequestedSupplierAndPlan = require('./usage').getDataForRequestedSupplierAndPlan;
-const getAmountInPenceWithoutVatAndStandingCharge = require('./usage').getAmountInPenceWithoutVatAndStandingCharge;
-const calculateAnnualSpendAmount = require('./usage').calculateAnnualSpendAmount;
-const convertToPences = require('./usage').convertToPences;
-const removeVat = require('./usage').removeVat;
-const removeStandingCharge = require('./usage').removeStandingCharge;
-const getAmountOfEnergyWithoutThresholds = require('./usage').getAmountOfEnergyWithoutThresholds;
-const getAmountOfEnergyWithThresholds = require('./usage').getAmountOfEnergyWithThresholds;
-const getAmountOfThreshold = require('./usage').getAmountOfThreshold;
+import {
+  usage,
+  getDataForRequestedSupplierAndPlan,
+  getAmountInPenceWithoutVatAndStandingCharge,
+  calculateAnnualSpendAmount,
+  convertToPences,
+  removeVat,
+  removeStandingCharge,
+  getAmountOfEnergyWithoutThresholds,
+  getAmountOfEnergyWithThresholds,
+  getAmountOfThreshold
+} from './usage';
 
 describe('about usage', () => {
   it('should return the expected result when the usage is invoked with the correct arguments', () => {
