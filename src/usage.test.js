@@ -3,7 +3,7 @@ import {
   getDataForRequestedSupplierAndPlan,
   getAmountInPenceWithoutVatAndStandingCharge,
   calculateAnnualSpendAmount,
-  convertToPences,
+  convertToPence,
   removeVat,
   removeStandingCharge,
   getAmountOfEnergyWithoutThresholds,
@@ -58,9 +58,9 @@ describe('about calculateAnnualSpendAmount', () => {
   });
 });
 
-describe('about convertToPences', () => {
+describe('about convertToPence', () => {
   it('should convert pounds to pence', () => {
-    expect(convertToPences(100)).toEqual(10000);
+    expect(convertToPence(100)).toEqual(10000);
   });
 });
 

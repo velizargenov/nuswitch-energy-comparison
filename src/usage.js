@@ -21,8 +21,8 @@ export const getDataForRequestedSupplierAndPlan = (data, supplierName, planName)
 
 export const getAmountInPenceWithoutVatAndStandingCharge = (planData, spend, numberOfMonthsInYear) => {
   const annualSpendAmountInPounds = calculateAnnualSpendAmount(spend, numberOfMonthsInYear);
-  const annualSpendAmountInPences = convertToPences(annualSpendAmountInPounds);
-  const amountWithoutVat = removeVat(annualSpendAmountInPences, vatRate);
+  const annualSpendAmountInPence = convertToPence(annualSpendAmountInPounds);
+  const amountWithoutVat = removeVat(annualSpendAmountInPence, vatRate);
   const amountWithoutVatAndStandingCharge = removeStandingCharge(planData, amountWithoutVat, numberOfDaysInYear);
 
   return amountWithoutVatAndStandingCharge;
@@ -32,7 +32,7 @@ export const calculateAnnualSpendAmount = (monthlySpend, numberOfMonthsInYear) =
   return monthlySpend * numberOfMonthsInYear;
 };
 
-export const convertToPences = (amount) => {
+export const convertToPence = (amount) => {
   return amount * 100;
 };
 
