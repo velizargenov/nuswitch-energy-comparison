@@ -1,5 +1,6 @@
 import readline from 'readline';
 import commands from './commands';
+import outputFormatter from './outputFormatter';
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -9,7 +10,8 @@ const rl = readline.createInterface({
 
 const executeCommandsInOrder = (line) => {
   const [command, ...args] = line.trim().split(' ');
-  return commands[command](...args);
+  const result = commands[command](...args);
+  return result.map(data => outputFormatter[command](data));
 }
 
 rl.on('line', executeCommandsInOrder);

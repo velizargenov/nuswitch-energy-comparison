@@ -1,8 +1,9 @@
 import { getData } from '../getData';
 import { vatRate, numberOfDaysInYear, numberOfMonthsInYear } from './constants';
 
+const data = getData();
+
 export const usage = (SUPPLIER_NAME, PLAN_NAME, SPEND) => {
-  const data = getData();
   const planData = getDataForRequestedSupplierAndPlan(data, SUPPLIER_NAME, PLAN_NAME);
   const amountInPenceWithoutVatAndStandingCharge = getAmountInPenceWithoutVatAndStandingCharge(planData, SPEND, numberOfMonthsInYear);
   const { rates } = planData;
@@ -11,8 +12,7 @@ export const usage = (SUPPLIER_NAME, PLAN_NAME, SPEND) => {
     ? getAmountOfEnergyWithThresholds(rates, amountInPenceWithoutVatAndStandingCharge)
     : getAmountOfEnergyWithoutThresholds(rates, amountInPenceWithoutVatAndStandingCharge)
 
-  console.log(finalEnergyUsage);
-  return finalEnergyUsage;
+  return [finalEnergyUsage];
 };
 
 export const getDataForRequestedSupplierAndPlan = (data, supplierName, planName) => {

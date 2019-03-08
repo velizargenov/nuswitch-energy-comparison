@@ -1,18 +1,12 @@
 import { getData } from '../getData';
 import { numberOfDaysInYear, vatRate } from './constants';
 
+const data = getData();
+
 export const price = ANNUAL_USAGE => {
-  let returnResult = [];
-  const data = getData();
-  const rawResult = data
+  return data
     .map(item => generateRawResult(item, ANNUAL_USAGE))
     .sort((a, b) => a.finalRate - b.finalRate);
-
-  rawResult.forEach(item => {
-    returnResult.push(`${item.supplier},${item.plan},${item.finalRate}`);
-    console.log(`${item.supplier},${item.plan},${item.finalRate}`);
-  });
-  return returnResult;
 };
 
 export const generateRawResult = (item, ANNUAL_USAGE) => {

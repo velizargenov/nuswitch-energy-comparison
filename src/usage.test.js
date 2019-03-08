@@ -11,7 +11,7 @@ import {
   getAmountOfThreshold
 } from './usage';
 
-describe('about usage', () => {
+describe.skip('about usage', () => {
   it('should return the expected result when the usage is invoked with the correct arguments', () => {
     const expectedResult = 44267;
     const supplierName = 'edf';
