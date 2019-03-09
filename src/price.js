@@ -1,5 +1,5 @@
 import { getData } from '../getData';
-import { numberOfDaysInYear, vatRate } from './constants';
+import { daysInYear, vatRate } from './constants';
 
 const data = getData();
 
@@ -10,10 +10,24 @@ export const price = ANNUAL_USAGE => {
 };
 
 export const generateRawResult = (item, ANNUAL_USAGE) => {
-  let usage = ANNUAL_USAGE;
   const { rates, standing_charge } = item;
+  let computedRate = getBaseComputedRate(rates, ANNUAL_USAGE);
 
-  let computedRate = rates.reduce((accumulator, currentValue) => {
+  if (standing_charge) {
+    computedRate = addStandingCharge(computedRate, standing_charge, daysInYear);
+  }
+
+  return {
+    supplier: item.supplier,
+    plan: item.plan,
+    finalRate: calculateFinalRate(vatRate, computedRate)
+  };
+};
+
+const getBaseComputedRate = (rates, ANNUAL_USAGE) => {
+  let usage = ANNUAL_USAGE;
+
+  return rates.reduce((accumulator, currentValue) => {
     while (usage >= 0) {
       const { threshold, price } = currentValue;
       if (threshold) {
@@ -25,38 +39,15 @@ export const generateRawResult = (item, ANNUAL_USAGE) => {
       }
     }
   }, 0);
+}
 
-  if (standing_charge) {
-    computedRate = addStandingChargeToComputedRate(computedRate, standing_charge, numberOfDaysInYear);
-  }
-
-  return {
-    supplier: item.supplier,
-    plan: item.plan,
-    finalRate: calculateFinalRate(vatRate, computedRate)
-  };
-};
-
-export const addStandingChargeToComputedRate = (computedRate, standing_charge, numberOfDaysInYear) => {
-  const standingChargeValue = numberOfDaysInYear * standing_charge;
-  return computedRate + standingChargeValue;
+export const addStandingCharge = (computedRate, standing_charge, daysInYear) => {
+  return computedRate + (daysInYear * standing_charge);
 };
 
 export const calculateFinalRate = (vatRate, computedRate) => {
-  const vatToBeAdded = calculateVatForComputedRate(vatRate, computedRate);
-  const rateWithStandingChargeAndVat = calculateRateWithStandingChargeAndVat(computedRate, vatToBeAdded);
+  const vatToBeAdded = computedRate * vatRate;
+  const rateWithStandingChargeAndVat = (computedRate + vatToBeAdded) / 100;
 
-  return roundFinalRate(rateWithStandingChargeAndVat);
-}
-
-export const calculateVatForComputedRate = (vatRate, computedRate) => {
-  return computedRate * vatRate;
-};
-
-export const calculateRateWithStandingChargeAndVat = (computedRate, vatToBeAdded) => {
-  return (computedRate + vatToBeAdded) / 100;
-}
-
-export const roundFinalRate = (rateWithStandingChargeAndVat) => {
   return Math.round(rateWithStandingChargeAndVat * 100) / 100;
 }

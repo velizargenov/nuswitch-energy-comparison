@@ -1,11 +1,11 @@
 import { getData } from '../getData';
-import { vatRate, numberOfDaysInYear, numberOfMonthsInYear } from './constants';
+import { vatRate, daysInYear, monthsInYear } from './constants';
 
 const data = getData();
 
 export const usage = (SUPPLIER_NAME, PLAN_NAME, SPEND) => {
   const planData = getDataForRequestedSupplierAndPlan(data, SUPPLIER_NAME, PLAN_NAME);
-  const amountInPenceWithoutVatAndStandingCharge = getAmountInPenceWithoutVatAndStandingCharge(planData, SPEND, numberOfMonthsInYear);
+  const amountInPenceWithoutVatAndStandingCharge = getAmountInPenceWithoutVatAndStandingCharge(planData, SPEND, monthsInYear);
   const { rates } = planData;
 
   const finalEnergyUsage = rates.some(rate => rate.threshold)
@@ -19,17 +19,17 @@ export const getDataForRequestedSupplierAndPlan = (data, supplierName, planName)
   return data.find(({ supplier, plan }) => supplier === supplierName && plan === planName);
 };
 
-export const getAmountInPenceWithoutVatAndStandingCharge = (planData, spend, numberOfMonthsInYear) => {
-  const annualSpendAmountInPounds = calculateAnnualSpendAmount(spend, numberOfMonthsInYear);
+export const getAmountInPenceWithoutVatAndStandingCharge = (planData, spend, monthsInYear) => {
+  const annualSpendAmountInPounds = calculateAnnualSpendAmount(spend, monthsInYear);
   const annualSpendAmountInPence = convertToPence(annualSpendAmountInPounds);
   const amountWithoutVat = removeVat(annualSpendAmountInPence, vatRate);
-  const amountWithoutVatAndStandingCharge = removeStandingCharge(planData, amountWithoutVat, numberOfDaysInYear);
+  const amountWithoutVatAndStandingCharge = removeStandingCharge(planData, amountWithoutVat, daysInYear);
 
   return amountWithoutVatAndStandingCharge;
 }
 
-export const calculateAnnualSpendAmount = (monthlySpend, numberOfMonthsInYear) => {
-  return monthlySpend * numberOfMonthsInYear;
+export const calculateAnnualSpendAmount = (monthlySpend, monthsInYear) => {
+  return monthlySpend * monthsInYear;
 };
 
 export const convertToPence = (amount) => {
@@ -40,8 +40,8 @@ export const removeVat = (amount, vatRate) => {
   return Math.round(amount / (1 + vatRate));
 };
 
-export const removeStandingCharge = ({ standing_charge }, amount, numberOfDaysInYear) => {
-  return standing_charge ? amount - (standing_charge * numberOfDaysInYear) : amount;
+export const removeStandingCharge = ({ standing_charge }, amount, daysInYear) => {
+  return standing_charge ? amount - (standing_charge * daysInYear) : amount;
 };
 
 export const getAmountOfEnergyWithThresholds = (rates, amount) => {
@@ -54,7 +54,7 @@ export const getAmountOfEnergyWithThresholds = (rates, amount) => {
   return baseRateUsage + totalThreshold;
 }
 
-export var getAmountOfThreshold = (rates) => {
+export const getAmountOfThreshold = (rates) => {
   return rates
     .filter(rate => rate.threshold)
     .reduce((acc, currentValue) => {
@@ -65,8 +65,8 @@ export var getAmountOfThreshold = (rates) => {
 
       return {
         ...acc,
-        ['totalPrice']: totalPrice,
-        ['totalThreshold']: totalThreshold
+        totalPrice,
+        totalThreshold
       }
     },0)
 }

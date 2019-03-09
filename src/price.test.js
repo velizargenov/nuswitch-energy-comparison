@@ -1,11 +1,8 @@
 import {
   price,
   generateRawResult,
-  addStandingChargeToComputedRate,
-  calculateFinalRate,
-  calculateVatForComputedRate,
-  calculateRateWithStandingChargeAndVat,
-  roundFinalRate
+  addStandingCharge,
+  calculateFinalRate
 } from './price';
 
 describe.skip('about price', () => {
@@ -71,12 +68,12 @@ describe('about generateRawResult', () => {
   });
 });
 
-describe('about addStandingChargeToComputedRate', () => {
+describe('about addStandingCharge', () => {
   it('should add the standing daily charge if available', () => {
     const computedRate = 111.25;
     const standing_charge = 7;
     const daysInYear = 365;
-    expect(addStandingChargeToComputedRate(computedRate, standing_charge, daysInYear)).toEqual(2666.25);
+    expect(addStandingCharge(computedRate, standing_charge, daysInYear)).toEqual(2666.25);
   });
 });
 
@@ -86,31 +83,5 @@ describe('about calculateFinalRate', () => {
     const computedRate = 10350;
     const expectedResult = 108.68;
     expect(calculateFinalRate(vatRate, computedRate)).toEqual(expectedResult);
-  });
-});
-
-describe('about calculateVatForComputedRate', () => {
-  it('it should return the VAT to be added to the rate', () => {
-    const vatRate = 0.05;
-    const computedRate = 10350;
-    const expectedResult = 517.5;
-    expect(calculateVatForComputedRate(vatRate, computedRate)).toEqual(expectedResult);
-  });
-});
-
-describe('about calculateRateWithStandingChargeAndVat', () => {
-  it('should return rate with added VAT and standing charge', () => {
-    const computedRate = 10350;
-    const vatToBeAdded = 517.5;
-    const expectedResult = 108.675;
-    expect(calculateRateWithStandingChargeAndVat(computedRate, vatToBeAdded)).toEqual(expectedResult);
-  });
-});
-
-describe('about roundFinalRate', () => {
-  it('should naturally round a number to the second decimal point', () => {
-    const rateWithStandingChargeAndVat = 108.675;
-    const expectedResult = 108.68;
-    expect(roundFinalRate(rateWithStandingChargeAndVat)).toEqual(expectedResult);
   });
 });
