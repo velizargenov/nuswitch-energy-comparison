@@ -4,7 +4,7 @@ import { vatRate, daysInYear, monthsInYear } from './constants';
 const data = getData();
 
 export const usage = (SUPPLIER_NAME, PLAN_NAME, SPEND) => {
-  const planData = getDataForRequestedSupplierAndPlan(data, SUPPLIER_NAME, PLAN_NAME);
+  const planData = data.find(({ supplier, plan }) => supplier === SUPPLIER_NAME && plan === PLAN_NAME);
   const amountInPenceWithoutVatAndStandingCharge = getAmountInPenceWithoutVatAndStandingCharge(planData, SPEND, monthsInYear);
   const { rates } = planData;
 
@@ -15,30 +15,14 @@ export const usage = (SUPPLIER_NAME, PLAN_NAME, SPEND) => {
   return [finalEnergyUsage];
 };
 
-export const getDataForRequestedSupplierAndPlan = (data, supplierName, planName) => {
-  return data.find(({ supplier, plan }) => supplier === supplierName && plan === planName);
-};
-
-export const getAmountInPenceWithoutVatAndStandingCharge = (planData, spend, monthsInYear) => {
-  const annualSpendAmountInPounds = calculateAnnualSpendAmount(spend, monthsInYear);
-  const annualSpendAmountInPence = convertToPence(annualSpendAmountInPounds);
-  const amountWithoutVat = removeVat(annualSpendAmountInPence, vatRate);
+export const getAmountInPenceWithoutVatAndStandingCharge = (planData, monthlySpend, monthsInYear) => {
+  const annualAmountInPounds = monthlySpend * monthsInYear;
+  const amountInPence = annualAmountInPounds * 100;
+  const amountWithoutVat = Math.round(amountInPence / (1 + vatRate));
   const amountWithoutVatAndStandingCharge = removeStandingCharge(planData, amountWithoutVat, daysInYear);
 
   return amountWithoutVatAndStandingCharge;
 }
-
-export const calculateAnnualSpendAmount = (monthlySpend, monthsInYear) => {
-  return monthlySpend * monthsInYear;
-};
-
-export const convertToPence = (amount) => {
-  return amount * 100;
-};
-
-export const removeVat = (amount, vatRate) => {
-  return Math.round(amount / (1 + vatRate));
-};
 
 export const removeStandingCharge = ({ standing_charge }, amount, daysInYear) => {
   return standing_charge ? amount - (standing_charge * daysInYear) : amount;
@@ -57,20 +41,22 @@ export const getAmountOfEnergyWithThresholds = (rates, amount) => {
 export const getAmountOfThreshold = (rates) => {
   return rates
     .filter(rate => rate.threshold)
-    .reduce((acc, currentValue) => {
-      const { price, threshold } = currentValue;
-      const priceInThreshold = price * threshold;
-      const totalPrice = acc['totalPrice'] ? acc['totalPrice'] + priceInThreshold : priceInThreshold;
-      const totalThreshold = acc['totalThreshold'] ? acc['totalThreshold'] + threshold : threshold;
+    .reduce(calculateTotalPriceAndThreshold, 0)
+}
 
-      return {
-        ...acc,
-        totalPrice,
-        totalThreshold
-      }
-    },0)
+const calculateTotalPriceAndThreshold = (acc, currentValue) => {
+  const { price, threshold } = currentValue;
+  const priceInThreshold = price * threshold;
+  const totalPrice = acc['totalPrice'] ? acc['totalPrice'] + priceInThreshold : priceInThreshold;
+  const totalThreshold = acc['totalThreshold'] ? acc['totalThreshold'] + threshold : threshold;
+
+  return {
+    ...acc,
+    totalPrice,
+    totalThreshold
+  }
 }
 
 export var getAmountOfEnergyWithoutThresholds = (rates, amount) => {
-  return Math.round(amount / (rates && rates[0] && rates[0].price));
+  return Math.round(amount / rates[0].price);
 }

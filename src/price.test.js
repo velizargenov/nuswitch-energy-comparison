@@ -5,14 +5,25 @@ import {
   calculateFinalRate
 } from './price';
 
-describe.skip('about price', () => {
+describe('about price', () => {
   it('should return the expected result for annual usage of 1000 kWh', () => {
-    const expectedResult = ['eon,variable,108.68', 'edf,fixed,111.25', 'ovo,standard,120.23', 'bg,standing-charge,121.33'];
+    const expectedResult = [
+      { supplier: 'eon', plan: 'variable', finalRate: 108.68 },
+      { supplier: 'edf', plan: 'fixed', finalRate: 111.25 },
+      { supplier: 'ovo', plan: 'standard', finalRate: 120.23 },
+      { supplier: 'bg', plan: 'standing-charge', finalRate: 121.33 }
+    ];
+
     expect(price(1000)).toEqual(expectedResult);
   });
 
   it('should return the expected result for annual usage of 2000 kWh', () => {
-    const expectedResult = ['edf,fixed,205.75', 'eon,variable,213.68', 'bg,standing-charge,215.83', 'ovo,standard,235.73'];
+    const expectedResult = [
+      { supplier: 'edf', plan: 'fixed', finalRate: 205.75 },
+      { supplier: 'eon', plan: 'variable', finalRate: 213.68 },
+      { supplier: 'bg', plan: 'standing-charge', finalRate: 215.83 },
+      { supplier: 'ovo', plan: 'standard', finalRate: 235.73 }
+    ]
     expect(price(2000)).toEqual(expectedResult);
   });
 });
