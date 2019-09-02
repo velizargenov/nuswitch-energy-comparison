@@ -10,11 +10,20 @@ export const price = ANNUAL_USAGE => {
 };
 
 export const generateRawResult = (item, ANNUAL_USAGE) => {
-  const { rates, standing_charge } = item;
+  const { rates, standing_charge, discounts } = item;
   let computedRate = getBaseComputedRate(rates, ANNUAL_USAGE);
 
   if (standing_charge) {
     computedRate = addStandingCharge(computedRate, standing_charge, daysInYear);
+  }
+
+  if (discounts && discounts.length) {
+    const data = discounts.find(item => item.applies_to === 'whole_bill');
+
+    if (data) {
+      computedRate = computedRate - data.value;
+    }
+
   }
 
   return {

@@ -1,0 +1,24 @@
+[
+{
+      "discounts": [
+          {
+              "applies_to": "whole_bill",
+              "cap": null,
+              "value": 9058,
+              "value_type": "price"
+          }
+      ],
+      "plan": "Fixed Price January 2017",
+      "rates": [
+          {
+              "price": 16.28,
+              "threshold": 371
+          },
+          {
+              "price": 7.66
+          }
+      ],
+      "standing_charge": 24.77,
+      "supplier": "british-gas"
+  }
+]

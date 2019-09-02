@@ -4,7 +4,9 @@ import { vatRate, daysInYear, monthsInYear } from './constants';
 const data = getData();
 
 export const usage = (SUPPLIER_NAME, PLAN_NAME, SPEND) => {
-  const planData = data.find(({ supplier, plan }) => supplier === SUPPLIER_NAME && plan === PLAN_NAME);
+  const planData = data.find(({ supplier, plan }) => {
+    return supplier === SUPPLIER_NAME && plan === PLAN_NAME;
+  });
   const amountInPenceWithoutVatAndStandingCharge = getAmountInPenceWithoutVatAndStandingCharge(planData, SPEND, monthsInYear);
   const { rates } = planData;
 
@@ -20,12 +22,22 @@ export const getAmountInPenceWithoutVatAndStandingCharge = (planData, monthlySpe
   const amountInPence = annualAmountInPounds * 100;
   const amountWithoutVat = Math.round(amountInPence / (1 + vatRate));
   const amountWithoutVatAndStandingCharge = removeStandingCharge(planData, amountWithoutVat, daysInYear);
+  const newValue = removeDiscounts(planData, amountWithoutVatAndStandingCharge);
 
-  return amountWithoutVatAndStandingCharge;
+  return newValue;
 }
 
 export const removeStandingCharge = ({ standing_charge }, amount, daysInYear) => {
   return standing_charge ? amount - (standing_charge * daysInYear) : amount;
+};
+
+const removeDiscounts = ({ discounts }, amount) => {
+  const data = discounts.find(item => item.applies_to === 'whole_bill');
+
+  if (data) {
+    return amount + data.value;
+  }
+  return amount;
 };
 
 export const getAmountOfEnergyWithThresholds = (rates, amount) => {

@@ -10,7 +10,10 @@ const rl = readline.createInterface({
 
 const executeCommandsInOrder = (line) => {
   const [command, ...args] = line.trim().split(' ');
-  const result = commands[command](...args);
+  const planName = args.slice(1, args.length - 1).join(' ');
+  const newArgs = [args[0], planName, args[args.length - 1]];
+
+  const result = commands[command](...newArgs);
   return result.map(data => outputFormatter[command](data));
 }
 
